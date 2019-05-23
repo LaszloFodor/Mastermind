@@ -2,11 +2,13 @@ package com.buttons.mastermind.controller;
 
 import com.buttons.mastermind.exception.*;
 import com.buttons.mastermind.model.Game;
-import com.buttons.mastermind.model.Guess;
 import com.buttons.mastermind.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -22,24 +24,19 @@ public class GameController {
     }
 
     @GetMapping("/create")
-    public Game createGame() {
+    public ResponseEntity<String> createGame() {
         Game game = gameService.startNewGame();
-        return game;
+        return new ResponseEntity<String>("New game created! Let's play!", HttpStatus.CREATED);
     }
 
     @PostMapping("/{gameId}/guess")
-    public Guess guess(@PathVariable String gameId, @RequestParam List<String> colours) throws GameNotFoundException,
+    public ResponseEntity<?> guess(@PathVariable String gameId, @RequestParam List<String> colours) throws GameNotFoundException,
             NumberOfGuessedColoursException, ColourNotFoundException, WinnerException, LoserException {
-        return gameService.checkGuess(Integer.valueOf(gameId), colours);
+        return new ResponseEntity<>(gameService.checkGuess(Integer.valueOf(gameId), colours), HttpStatus.OK);
     }
 
     @GetMapping("/{gameId}")
-    public List<Guess> getHistory(@PathVariable String gameId) throws GameNotFoundException {
-        return gameService.getHistory(Integer.valueOf(gameId));
-    }
-
-    @GetMapping("/{gameId}/get")
-    public Iterable<Game> getAll(@PathVariable String gameId) throws GameNotFoundException {
-        return gameService.getAll();
+    public ResponseEntity<?> getHistory(@PathVariable String gameId) throws GameNotFoundException {
+        return new ResponseEntity<>(gameService.getHistory(Integer.valueOf(gameId)), HttpStatus.OK);
     }
 }

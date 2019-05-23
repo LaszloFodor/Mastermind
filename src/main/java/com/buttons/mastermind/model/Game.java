@@ -1,7 +1,5 @@
 package com.buttons.mastermind.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 

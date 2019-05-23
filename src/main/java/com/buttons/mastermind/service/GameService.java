@@ -100,8 +100,4 @@ public class GameService {
         return game.getGuessList();
     }
 
-    public Iterable<Game> getAll() {
-        return gameRepository.findAll();
-    }
-
 }
