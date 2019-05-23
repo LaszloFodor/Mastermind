@@ -65,8 +65,6 @@ public class GameService {
         for (int i = 0; i < col.size(); i++) {
             if (guessedCol.get(i).toUpperCase().equals(col.get(i).getName())) {
                 black++;
-//                guessedCol.set(i, "NULL");
-//                col.get(i).setName("NULL");
             }
         }
 
@@ -79,20 +77,13 @@ public class GameService {
             int index = guessedCol.indexOf(colour);
             if (guessedCol.contains(colour)) {
                 white++;
-//                guessedCol.set(index, "NULL");
             }
         }
-
-
+        
         Guess guess = new Guess(black, white);
         game.addGuess(guess);
         gameRepository.save(game);
         int winnerCounter = 0;
-//        for (int i = 0; i < game.getPickedColours().size(); i++) {
-//            if (game.getPickedColours().get(i).getName().equals("NULL")) {
-//                winnerCounter++;
-//            }
-//        }
         if (black == 4 && game.getGuessList().size() <= 10) {
             throw new WinnerException();
         } else if (winnerCounter != 4 && game.getGuessList().size() == 10) {
