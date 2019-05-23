@@ -2,6 +2,7 @@ package com.buttons.mastermind.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Game {
@@ -41,10 +42,6 @@ public class Game {
         for (Colour colour : pickedColours) {
             colour.setGame(this);
         }
-    }
-
-    public void addColours(Colour colour) {
-        this.pickedColours.add(colour);
     }
 
     public List<Guess> getGuessList() {

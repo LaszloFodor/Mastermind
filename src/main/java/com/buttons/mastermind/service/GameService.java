@@ -42,15 +42,20 @@ public class GameService {
     }
 
     public Guess checkGuess(int gameId, List<String> guessedColours) throws GameNotFoundException,
-            NumberOfGuessedColoursException, ColourNotFoundException, WinnerException, LoserException {
+            NumberOfGuessedColoursException, ColourNotFoundException, WinnerException, LoserException, GuessOverFlowException {
         if (guessedColours.size() != 4){
             throw new NumberOfGuessedColoursException();
         }
+
         if (!colours.containsAll(guessedColours.stream().map(String::toUpperCase).collect(Collectors.toList()))) {
             throw new ColourNotFoundException();
         }
 
         Game game = gameRepository.findById(gameId).orElseThrow( () -> new GameNotFoundException());
+
+        if (game.getGuessList().size() == 10) {
+            throw new GuessOverFlowException();
+        }
         List<Colour> col = game.getPickedColours();
         List<String> guessedCol = guessedColours;
 
@@ -60,13 +65,13 @@ public class GameService {
         for (int i = 0; i < col.size(); i++) {
             if (guessedCol.get(i).toUpperCase().equals(col.get(i).getName())) {
                 black++;
-                guessedCol.set(i, "NULL");
-                col.get(i).setName("NULL");
+//                guessedCol.set(i, "NULL");
+//                col.get(i).setName("NULL");
             }
         }
 
         for (int i = 0; i < col.size(); i++ ) {
-            if (col.get(i).getName().equals("NULL")) {
+            if (guessedCol.get(i).toUpperCase().equals(col.get(i).getName())) {
                 continue;
             }
 
@@ -74,20 +79,21 @@ public class GameService {
             int index = guessedCol.indexOf(colour);
             if (guessedCol.contains(colour)) {
                 white++;
-                guessedCol.set(index, "NULL");
+//                guessedCol.set(index, "NULL");
             }
         }
+
 
         Guess guess = new Guess(black, white);
         game.addGuess(guess);
         gameRepository.save(game);
         int winnerCounter = 0;
-        for (int i = 0; i < game.getPickedColours().size(); i++) {
-            if (game.getPickedColours().get(i).getName().equals("NULL")) {
-                winnerCounter++;
-            }
-        }
-        if (winnerCounter == 4 && game.getGuessList().size() <= 10) {
+//        for (int i = 0; i < game.getPickedColours().size(); i++) {
+//            if (game.getPickedColours().get(i).getName().equals("NULL")) {
+//                winnerCounter++;
+//            }
+//        }
+        if (black == 4 && game.getGuessList().size() <= 10) {
             throw new WinnerException();
         } else if (winnerCounter != 4 && game.getGuessList().size() == 10) {
             throw new LoserException();
@@ -95,8 +101,8 @@ public class GameService {
         return guess;
     }
 
-    public List<Guess> getHistory(int Id) throws GameNotFoundException {
-        Game game = gameRepository.findById(Id).orElseThrow(GameNotFoundException::new);
+    public List<Guess> getHistory(int gameId) throws GameNotFoundException {
+        Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
         return game.getGuessList();
     }
 

@@ -33,4 +33,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleLoser() {
         return new ResponseEntity<Object>("You LOST!", HttpStatus.OK);
     }
+
+    @ExceptionHandler({GuessOverFlowException.class})
+    public ResponseEntity<Object> handleGuessOverflow() {
+        return new ResponseEntity<>("You cannot give more guesses!", HttpStatus.FORBIDDEN);
+    }
 }

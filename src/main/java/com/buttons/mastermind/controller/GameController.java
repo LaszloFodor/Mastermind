@@ -29,13 +29,13 @@ public class GameController {
         return new ResponseEntity<String>("New game created! Let's play!", HttpStatus.CREATED);
     }
 
-    @PostMapping("/{gameId}/guess")
+    @PostMapping("/games/{gameId}/guess")
     public ResponseEntity<?> guess(@PathVariable String gameId, @RequestParam List<String> colours) throws GameNotFoundException,
-            NumberOfGuessedColoursException, ColourNotFoundException, WinnerException, LoserException {
+            NumberOfGuessedColoursException, ColourNotFoundException, WinnerException, LoserException, GuessOverFlowException {
         return new ResponseEntity<>(gameService.checkGuess(Integer.valueOf(gameId), colours), HttpStatus.OK);
     }
 
-    @GetMapping("/{gameId}")
+    @GetMapping("/games/{gameId}/history")
     public ResponseEntity<?> getHistory(@PathVariable String gameId) throws GameNotFoundException {
         return new ResponseEntity<>(gameService.getHistory(Integer.valueOf(gameId)), HttpStatus.OK);
     }
